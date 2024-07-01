@@ -46,7 +46,7 @@ Dentro de application.properties, colocamos os dados de conexão com o postgres.
 1. Criar pacote models e Classes;
 <hr>
 
-#### CLASSE BOOKMODEL [INSERIR LINK]
+#### CLASSE BOOKMODEL [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/main/src/main/java/com/bookstore/jpa/models/BookModel.java)
 - Passar @Entity
 - Criar a tabela com @Table
 
@@ -64,16 +64,16 @@ Title:
 Criar agora Getters e Setters.
 <hr>
 
-#### CLASSE PUBLISHERMODEL [INSERIR LINK]
+#### CLASSE PUBLISHERMODEL [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/main/src/main/java/com/bookstore/jpa/models/PublisherModel.java)
 - Fazer os mesmos passos da classe acima (mapeamento com Entity, Table, Id, etc...)
 
 <hr>
 
-#### CLASSE AUTHORMODEL [INSERIR LINK]
+#### CLASSE AUTHORMODEL [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/main/src/main/java/com/bookstore/jpa/models/AuthorModel.java)
 - Fazer os mesmos passos da classe acima (mapeamento com Entity, Table, Id, etc...)
 <hr>
 
-#### CLASSE REVIEWMODEL [INSERIR LINK]
+#### CLASSE REVIEWMODEL [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/main/src/main/java/com/bookstore/jpa/models/ReviewModel.java)
 - Fazer os mesmos passos da classe acima (mapeamento com Entity, Table, Id, etc...)
 <hr>
 
@@ -82,13 +82,13 @@ Cada livro, possui uma editora.
 
 Mas uma editora (publisher), pode ter publicado vários livros.
 
-### ManyToOne [Veja aqui]()
+### ManyToOne [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/a2693de36d9ede5d63456aa52b0398b517874015/src/main/java/com/bookstore/jpa/models/BookModel.java#L23)
 Na classe BookModel, importaremos o objeto Publisher e passaremos as seguintes anotações:
 - ManyToOne - Pois como dito acima, um book só terá um publisher;
 - JoinColumn - Criaremos uma coluna a mais, com a chave estrangeira "publisher_id". Essa coluna terá ligação a entidade Publisher.
 
 
-### OneToMany [Veja aqui]()
+### OneToMany [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/a2693de36d9ede5d63456aa52b0398b517874015/src/main/java/com/bookstore/jpa/models/PublisherModel.java#L21)
 Na classe PublisherModel, importamos a coleção (set) de Books e passaremos as anotações.
 - ManyToOne - Pois são várias editoras, para um só livro.
   - Passaremos o mappedBy = "publisher"
@@ -116,7 +116,7 @@ Será feito na tabela author e book, pois, um livro pode ter mais de um autor e 
 Um livro terá uma coleção de autores. 
 Autores terá uma coleção de livros.
 
-**Na classe BookModel**
+**Na classe BookModel** [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/a2693de36d9ede5d63456aa52b0398b517874015/src/main/java/com/bookstore/jpa/models/BookModel.java#L25)
 - Importaremos um Set de AuthorModel.
 - Passaremos anotação @ManyToMany
 
@@ -127,7 +127,7 @@ Usaremos @JoinTable, (tabela auxiliar), que vai unir os ID's das suas entidades.
 - joinColumns = @JoinColumn(name = "book_id") > chave primária
 - inverseJoinColumns = @JoinColumn(name = "author_id") > chave estrangeira
 
-**Na classe AuthorModel**
+**Na classe AuthorModel** [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/a2693de36d9ede5d63456aa52b0398b517874015/src/main/java/com/bookstore/jpa/models/AuthorModel.java#L22)
 - Importaremos um Set de BookModel
 - Passaremos anotação @ManyToMany
 
