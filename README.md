@@ -1,4 +1,6 @@
 # SPRING DATA JPA - 2024
+Destancando-se que este repositório está focado na visualização destes códigos no Postman/Postgres.
+Este repositório não está focado numa criação de API.
 
 ## JPA
 
@@ -110,7 +112,7 @@ Isso não é sempre necessário, portanto, o Lazy é o mais adequado.
 Isso irá nos permitir então buscar, por exemplo, um livro que pertence a uma editora específica, pois o mapeamento foi feito. 
 <hr>
 
-### ManyToMany [Veja aqui]()
+### ManyToMany 
 Será feito na tabela author e book, pois, um livro pode ter mais de um autor e um autor pode ter mais de um livro.
 
 Um livro terá uma coleção de autores. 
@@ -133,6 +135,72 @@ Usaremos @JoinTable, (tabela auxiliar), que vai unir os ID's das suas entidades.
 
 E aplicaremos o relacionamento. Dentro de @ManyToManny, passaremos o mappedBy novamente.
 E aí, é o que já sabemos. Como o Author foi importado na classe? Como "authors" (dono desse relacionamento). Portanto, o mappedBy terá justamente esse nome associado a ele.
+
+
+### OneToOne
+Um livro vai ter uma resenha (resumo). Uma resenha (resumo) será para um livro. Um para um.
+Ele não pode ter dois resumos.
+
+**Com essa implementação, sempre que buscarmos um livro (BookModel) ele vai trazer os relacionamentos um pra um. (Padrão FecthType.EAGER - ansioso).**
+
+
+**Na classe ReviewModel** [Veja aqui]()
+- Importaremos o Book;
+  - Dessa vez, não será um Set pois será somente **um livro**;
+  - @JsonProperty com write only evitando erro na serialização;
+  - Anotação OneToOne;
+  - Passa também @JoinColumn = "book_id";
+    - Essa coluna com essa chave estrangeira relacionará a qual livro esse Review pertece.
+
+
+**Na classe BookModel** [Veja aqui]()
+- Importaremos o review;
+  - Passa a anotação OneToOne; 
+  - Ele será mappedBy "books". Nome da variável na classe **Review**;
+  - E também tera o parâmetro cascade = Type.ALL;
+
+#### Sobre CascadeType
+
+Assim que criamos um Review e atribuímos ele dentro de book, ele será salvo como uma cascata de transações.
+
+Sempre que fizermos determinadas transações na base de dados com relação a esses relacionamentos,
+se for o Book, por exemplo, ele será replicado para os relacionamentos que estiverem considerando essa "cascata".
+    
+Caso a gente salve um livro (bookmodel) poderemos passar simultaneamente, de forma interna (sem save), um review. 
+
+**Outra situação é se fossemos deletar um determinado Book. Se fizermos isso, com o CascadeTypeAll, ele também deleterá o review desse livro.**
+
+Mas o mais interessante é fazermos essas operações (deleção/salvamento) de forma customizada.
+
+
+
+<hr>
+
+## Repositories
+Aqui faremos de fato o uso do Spring Data JPA e as suas facilidades. 
+
+Primeiro, criaremos um packate repositories.
+
+Criaremos dentro desse packate uma interface BookRepository. Ela automaticamente será um Bean do Spring (como se usássemos o @Repository).
+
+### Por que criar essa interface?
+Bom, ela será feita exclusivamente para fazermos o extends JpaRepository. Dentro dele, passamos: <EntidadeUtilizada, Identificação>
+
+Aqui teremos métodos de save, delete, findById....
+
+Mas também teremos outros recursos, por exemplo: Se quisermos encontrar um livro pelo nome de um título, é muito simples!
+
+Não precisa de forma alguma escrever um “script” SQL. O próprio JPA nos permite trabalhar com métodos a partir de nomes de atributos :) [Veja aqui]()
+
+Podemos também procurar livros pela ID do Publisher. Neste caso, como são mais de um, o método retornará uma lista. **Passamos o @Query com o select que quisermos.** [Veja aqui]()
+
+### Método save() e @Transactional
+
+
+<hr>
+
+
+
 
 <hr>
 
