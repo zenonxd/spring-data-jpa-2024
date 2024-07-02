@@ -144,7 +144,7 @@ Ele não pode ter dois resumos.
 **Com essa implementação, sempre que buscarmos um livro (BookModel) ele vai trazer os relacionamentos um pra um. (Padrão FecthType.EAGER - ansioso).**
 
 
-**Na classe ReviewModel** [Veja aqui]()
+**Na classe ReviewModel** [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/models/ReviewModel.java#L21)
 - Importaremos o Book;
   - Dessa vez, não será um Set, pois será somente **um livro**;
   - @JsonProperty com write only evitando erro na serialização;
@@ -153,7 +153,7 @@ Ele não pode ter dois resumos.
     - Essa coluna com essa chave estrangeira relacionará a qual livro esse Review pertece.
 
 
-**Na classe BookModel** [Veja aqui]()
+**Na classe BookModel** [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/models/BookModel.java#L38)
 - Importaremos o review;
   - Passa a anotação OneToOne; 
   - Ele será mappedBy "books". Nome da variável na classe **Review**;
@@ -187,23 +187,23 @@ Aqui teremos métodos de save, delete, findById....
 
 Mas também teremos outros recursos, por exemplo: Se quisermos encontrar um livro pelo nome de um título, é muito simples!
 
-Não precisa de forma alguma escrever um “script” SQL. O próprio JPA nos permite trabalhar com métodos a partir de nomes de atributos :) [Veja aqui]()
+Não precisa de forma alguma escrever um “script” SQL. O próprio JPA nos permite trabalhar com métodos a partir de nomes de atributos :) [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/repositories/BookRepository.java#L15)
 
-Podemos também procurar livros pela ID do Publisher. Neste caso, como são mais de um, o método retornará uma lista. **Passamos o @Query com o select que quisermos.** [Veja aqui]()
+Podemos também procurar livros pela ID do Publisher. Neste caso, como são mais de um, o método retornará uma lista. **Passamos o @Query com o select que quisermos.
 
 **Será criado também Repositories para todas as outras classes**
 <hr>
 
 ### CRIANDO OS MÉTODOS
 
-1. Vamos criar um pacote "dto" e um PublicRecordDto [Veja aqui]()
+1. Vamos criar um pacote "dto" e um PublicRecordDto [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/dto/BookRecordDto.java#L6)
 2. Criaremos um pacote "service" e um BookService, parar criarmos métodos de encontrar, deletar e listar os livros.
 3. Como é um service. Faremos um ponto de injeção com os repositories e criaremos um construtor.
 <hr>
 
 ### SERVICE
 
-#### MÉTODO SAVE() E @TRANSACTIONAL [Veja aqui]()
+#### MÉTODO SAVE() E @TRANSACTIONAL [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/service/BookService.java#L17)
 
 1. O método receberá um BookRecordDto (parâmetro que será passado pelo cliente no Postman (um JSON))
 2. Instanciaremos um BookModel;
@@ -213,19 +213,19 @@ Podemos também procurar livros pela ID do Publisher. Neste caso, como são mais
 
 Bom, então como settar os outros valores?
 ### Book
-#### Publisher [Veja aqui]()
+#### Publisher [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/service/BookService.java#L35)
 1. No postman o client passará uma publisherId e ela já tem que existir na base de dados. 
 2. No .setPublisher (do book), nós entraremos no publisherRepository e no findById, passaremos a
 .publisherId do cliente com a classe Dto.
 3. Como esse método retorna um Optional, usaremos o .get() no final.
-#### Authors [Veja aqui]()
+#### Authors [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/service/BookService.java#L36)
 1. Assim como acima, o cliente passará uma Lista (contendo um ou mais) autores;
 2. No .setAuthors, entraremos no repository e buscaremos pelo findAllById(passando uma listagem de UUID's).
 (esse método retorna uma lista).
 3. Dentro desse find, passaremos o Dto, pegando a lista que o cliente passou no Postman.
 4. Passaremos por fim, o .stream.collect para iterar a lista, obtendo essa listagem de Id's do tipo UUID's.
 
-#### Review [Veja aqui]()
+#### Review [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/service/BookService.java#L38)
 Como estamos usando o modo CascadeType.All, o review também será salvo assim como a transação de salvamento do bookModel.
 
 1. Instanciaremos um reviewModel;
@@ -244,6 +244,6 @@ Caso uma dessas transações falhe, o @Transactional garante um rollback.
 preservando todos os dados.
 <hr>
 
-### CONTROLLER [Veja aqui]()
+### CONTROLLER [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/48836e8679a7d43a7f0290798adff2149bcbf5fc/src/main/java/com/bookstore/jpa/controller/BookController.java#L16)
 Para usarmos o método save do Service, criaremos um pacote controller com sua classe.
 <hr>
