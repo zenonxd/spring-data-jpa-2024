@@ -146,7 +146,7 @@ Ele não pode ter dois resumos.
 
 **Na classe ReviewModel** [Veja aqui]()
 - Importaremos o Book;
-  - Dessa vez, não será um Set pois será somente **um livro**;
+  - Dessa vez, não será um Set, pois será somente **um livro**;
   - @JsonProperty com write only evitando erro na serialização;
   - Anotação OneToOne;
   - Passa também @JoinColumn = "book_id";
@@ -171,17 +171,14 @@ Caso a gente salve um livro (bookmodel) poderemos passar simultaneamente, de for
 **Outra situação é se fossemos deletar um determinado Book. Se fizermos isso, com o CascadeTypeAll, ele também deleterá o review desse livro.**
 
 Mas o mais interessante é fazermos essas operações (deleção/salvamento) de forma customizada.
-
-
-
 <hr>
 
 ## Repositories
 Aqui faremos de fato o uso do Spring Data JPA e as suas facilidades. 
 
-Primeiro, criaremos um packate repositories.
+Primeiro, criaremos um package repositories.
 
-Criaremos dentro desse packate uma interface BookRepository. Ela automaticamente será um Bean do Spring (como se usássemos o @Repository).
+Criaremos dentro desse package uma interface BookRepository. Ela automaticamente será um Bean do Spring (como se usássemos o @Repository).
 
 ### Por que criar essa interface?
 Bom, ela será feita exclusivamente para fazermos o extends JpaRepository. Dentro dele, passamos: <EntidadeUtilizada, Identificação>
@@ -194,17 +191,59 @@ Não precisa de forma alguma escrever um “script” SQL. O próprio JPA nos pe
 
 Podemos também procurar livros pela ID do Publisher. Neste caso, como são mais de um, o método retornará uma lista. **Passamos o @Query com o select que quisermos.** [Veja aqui]()
 
-### Método save() e @Transactional
-
-
+**Será criado também Repositories para todas as outras classes**
 <hr>
 
+### CRIANDO OS MÉTODOS
 
-
-
+1. Vamos criar um pacote "dto" e um PublicRecordDto [Veja aqui]()
+2. Criaremos um pacote "service" e um BookService, parar criarmos métodos de encontrar, deletar e listar os livros.
+3. Como é um service. Faremos um ponto de injeção com os repositories e criaremos um construtor.
 <hr>
 
-## ANOTAÇÕES JPA
+### SERVICE
 
-- @Table(name = "TB_BOOK") -
-Dá o nome a uma tabela a ser criada.
+#### MÉTODO SAVE() E @TRANSACTIONAL [Veja aqui]()
+
+1. O método receberá um BookRecordDto (parâmetro que será passado pelo cliente no Postman (um JSON))
+2. Instanciaremos um BookModel;
+3. E settaremos os valores;
+   - O title nós conseguimos passar pelo Dto;
+   - Mas os outros Sets, a gente precisa lembrar que temos os nossos relaciomentos das outras classes que precisamos passar para realizar o save.
+
+Bom, então como settar os outros valores?
+### Book
+#### Publisher [Veja aqui]()
+1. No postman o client passará uma publisherId e ela já tem que existir na base de dados. 
+2. No .setPublisher (do book), nós entraremos no publisherRepository e no findById, passaremos a
+.publisherId do cliente com a classe Dto.
+3. Como esse método retorna um Optional, usaremos o .get() no final.
+#### Authors [Veja aqui]()
+1. Assim como acima, o cliente passará uma Lista (contendo um ou mais) autores;
+2. No .setAuthors, entraremos no repository e buscaremos pelo findAllById(passando uma listagem de UUID's).
+(esse método retorna uma lista).
+3. Dentro desse find, passaremos o Dto, pegando a lista que o cliente passou no Postman.
+4. Passaremos por fim, o .stream.collect para iterar a lista, obtendo essa listagem de Id's do tipo UUID's.
+
+#### Review [Veja aqui]()
+Como estamos usando o modo CascadeType.All, o review também será salvo assim como a transação de salvamento do bookModel.
+
+1. Instanciaremos um reviewModel;
+2. Settaremos o comment extraindo diretamente do DTO;
+3. Passaremos o livro para **fazermos esse relacionamento um pra um**.
+
+E por fim, entraremos no book.setReview(passando aqui o reviewModel criado).
+
+Com todos os parâmetros populados e preenchidos, será possivel dar o return com .save(passando aqui, o book).
+
+### @Transactional
+Dentro do método save, teremos diversas execuções/transações na base de dados. Salvamentos, relacionamentos...
+Caso uma dessas transações falhe, o @Transactional garante um rollback.
+
+**Não será salvo uma review sem existir um Book, por exemplo.** Havendo um erro em alguma das partes, teremos um rollback,
+preservando todos os dados.
+<hr>
+
+### CONTROLLER [Veja aqui]()
+Para usarmos o método save do Service, criaremos um pacote controller com sua classe.
+<hr>
