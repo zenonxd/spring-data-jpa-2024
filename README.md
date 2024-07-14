@@ -92,7 +92,7 @@ Na classe BookModel, importaremos o objeto Publisher e passaremos as seguintes a
 
 ### OneToMany [Veja aqui](https://github.com/zenonxd/spring-data-jpa-2024/blob/a2693de36d9ede5d63456aa52b0398b517874015/src/main/java/com/bookstore/jpa/models/PublisherModel.java#L21)
 Na classe PublisherModel, importamos a coleção (set) de Books e passaremos as anotações.
-- ManyToOne - Pois são várias editoras, para um só livro.
+- OneToMany - Pois são várias editoras, para um só livro.
   - Passaremos o mappedBy = "publisher"
   - fetch = FetchType.Lazy.
 
